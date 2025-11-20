@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Healthcare Plus Clinic – AI Chatbot Demo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="hero">
+      <div>
+        <p class="eyebrow">Healthcare Plus Clinic</p>
+        <h1>AI Chatbot Demo</h1>
+        <p class="muted">
+          Training-only experience for staff and patient flows. Do not share real patient information.
+        </p>
+      </div>
+      <div class="tag danger">Demo – Not medical advice</div>
+    </header>
+
+    <section class="role-picker">
+      <div class="role-card" data-role="staff">
+        <h3>Staff Workspace</h3>
+        <p>Patient lookup, analytics, marketing snippets, and clinical protocols.</p>
+        <button class="primary-btn select-role" data-role="staff">Continue as Staff</button>
+      </div>
+      <div class="role-card" data-role="patient">
+        <h3>Patient Assistant</h3>
+        <p>Ask about clinic info, report symptoms, book visits, or generate a report.</p>
+        <button class="primary-btn ghost select-role" data-role="patient">Continue as Patient</button>
+      </div>
+    </section>
+
+    <main id="app">
+      <section id="staff-section" class="panel hidden">
+        <div class="sidebar">
+          <h4>Quick Actions</h4>
+          <button class="chip staff-action" data-fill="Find patient P-001">Patient Lookup</button>
+          <button class="chip staff-action" data-fill="Show analytics">Analytics</button>
+          <button class="chip staff-action" data-fill="Generate social media post">Marketing</button>
+          <button class="chip staff-action" data-fill="Stroke protocol">Clinical Protocol</button>
+          <div class="sidebar-note">Internal use only. Demo data.</div>
+        </div>
+        <div class="chat-surface">
+          <div class="chat-header">
+            <div>
+              <h3>Staff Chat</h3>
+              <p class="muted">Ask for patient records, metrics, protocols, or marketing content.</p>
+            </div>
+            <button id="switch-to-patient" class="ghost">Switch to Patient</button>
+          </div>
+          <div id="staff-chat" class="chat-window"></div>
+          <form id="staff-form" class="chat-input">
+            <input id="staff-input" placeholder="Ask anything... e.g., find patient P-001" autocomplete="off" />
+            <button type="submit" class="primary-btn">Send</button>
+          </form>
+        </div>
+      </section>
+
+      <section id="patient-section" class="panel hidden">
+        <div class="sidebar">
+          <h4>Services</h4>
+          <button class="chip patient-action" data-fill="What are your hours?">Clinic Info</button>
+          <button class="chip patient-action" data-fill="I want to report symptoms">Report Symptoms</button>
+          <button class="chip patient-action" data-fill="Book an appointment">Book Appointment</button>
+          <button class="chip patient-action" data-fill="Generate my report">Request Report</button>
+          <div class="sidebar-note">This assistant is for demonstration only.</div>
+        </div>
+        <div class="chat-surface">
+          <div class="chat-header">
+            <div>
+              <h3>Patient Chat</h3>
+              <p class="muted">We'll help with hours, symptoms, booking, and recap reports.</p>
+            </div>
+            <button id="switch-to-staff" class="ghost">Switch to Staff</button>
+          </div>
+          <div id="patient-chat" class="chat-window"></div>
+          <form id="patient-form" class="chat-input">
+            <input id="patient-input" placeholder="Ask about hours, symptoms, booking..." autocomplete="off" />
+            <button type="submit" class="primary-btn">Send</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <p class="muted">
+        Demo only. Responses may be inaccurate. For urgent concerns, call emergency services or visit the clinic.
+      </p>
+    </footer>
+
+    <script src="app.js"></script>
+  </body>
+</html>
