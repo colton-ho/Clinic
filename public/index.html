@@ -1,94 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Healthcare Plus Clinic – AI Chatbot Demo</title>
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <header class="hero">
-      <div>
-        <p class="eyebrow">Healthcare Plus Clinic</p>
-        <h1>AI Chatbot Demo</h1>
-        <p class="muted">
-          Training-only experience for staff and patient flows. Do not share real patient information.
-        </p>
-      </div>
-      <div class="tag danger">Demo – Not medical advice</div>
-    </header>
-
-    <section class="role-picker">
-      <div class="role-card" data-role="staff">
-        <h3>Staff Workspace</h3>
-        <p>Patient lookup, analytics, marketing snippets, and clinical protocols.</p>
-        <button class="primary-btn select-role" data-role="staff">Continue as Staff</button>
-      </div>
-      <div class="role-card" data-role="patient">
-        <h3>Patient Assistant</h3>
-        <p>Ask about clinic info, report symptoms, book visits, or generate a report.</p>
-        <button class="primary-btn ghost select-role" data-role="patient">Continue as Patient</button>
-      </div>
-    </section>
-
-    <main id="app">
-      <section id="staff-section" class="panel hidden">
-        <div class="sidebar">
-          <h4>Quick Actions</h4>
-          <button class="chip staff-action" data-fill="Find patient P-001">Patient Lookup</button>
-          <button class="chip staff-action" data-fill="Show analytics">Analytics</button>
-          <button class="chip staff-action" data-fill="Generate social media post">Marketing</button>
-          <button class="chip staff-action" data-fill="Stroke protocol">Clinical Protocol</button>
-          <div class="sidebar-note">Internal use only. Demo data.</div>
-        </div>
-        <div class="chat-surface">
-          <div class="chat-header">
-            <div>
-              <h3>Staff Chat</h3>
-              <p class="muted">Ask for patient records, metrics, protocols, or marketing content.</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Healthcare Plus Clinic - AI Chatbot Demo</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Landing Page -->
+    <div id="landing-page" class="page active">
+        <div class="landing-container">
+            <div class="logo-section">
+                <h1>Healthcare Plus Clinic</h1>
+                <p class="tagline">AI-Powered Healthcare Assistant Demo</p>
             </div>
-            <button id="switch-to-patient" class="ghost">Switch to Patient</button>
-          </div>
-          <div id="staff-chat" class="chat-window"></div>
-          <form id="staff-form" class="chat-input">
-            <input id="staff-input" placeholder="Ask anything... e.g., find patient P-001" autocomplete="off" />
-            <button type="submit" class="primary-btn">Send</button>
-          </form>
-        </div>
-      </section>
-
-      <section id="patient-section" class="panel hidden">
-        <div class="sidebar">
-          <h4>Services</h4>
-          <button class="chip patient-action" data-fill="What are your hours?">Clinic Info</button>
-          <button class="chip patient-action" data-fill="I want to report symptoms">Report Symptoms</button>
-          <button class="chip patient-action" data-fill="Book an appointment">Book Appointment</button>
-          <button class="chip patient-action" data-fill="Generate my report">Request Report</button>
-          <div class="sidebar-note">This assistant is for demonstration only.</div>
-        </div>
-        <div class="chat-surface">
-          <div class="chat-header">
-            <div>
-              <h3>Patient Chat</h3>
-              <p class="muted">We'll help with hours, symptoms, booking, and recap reports.</p>
+            <div class="role-selection">
+                <h2>Select Your Role</h2>
+                <div class="role-buttons">
+                    <button class="btn btn--primary btn--lg" onclick="selectRole('staff')">
+                        <span class="role-icon">👨‍⚕️</span>
+                        <span>I'm a Staff Member</span>
+                    </button>
+                    <button class="btn btn--primary btn--lg" onclick="selectRole('patient')">
+                        <span class="role-icon">👤</span>
+                        <span>I'm a Patient</span>
+                    </button>
+                </div>
             </div>
-            <button id="switch-to-staff" class="ghost">Switch to Staff</button>
-          </div>
-          <div id="patient-chat" class="chat-window"></div>
-          <form id="patient-form" class="chat-input">
-            <input id="patient-input" placeholder="Ask about hours, symptoms, booking..." autocomplete="off" />
-            <button type="submit" class="primary-btn">Send</button>
-          </form>
+            <div class="demo-info">
+                <p><strong>Demo Features:</strong></p>
+                <ul>
+                    <li><strong>Staff:</strong> Patient records, marketing generation, analytics &amp; clinical queries</li>
+                    <li><strong>Patient:</strong> Symptom collection, appointment booking, clinic info &amp; reports</li>
+                </ul>
+            </div>
         </div>
-      </section>
-    </main>
+    </div>
 
-    <footer class="footer">
-      <p class="muted">
-        Demo only. Responses may be inaccurate. For urgent concerns, call emergency services or visit the clinic.
-      </p>
-    </footer>
+    <!-- Staff Dashboard -->
+    <div id="staff-page" class="page">
+        <div class="dashboard-header">
+            <div class="header-content">
+                <h2>Staff Dashboard</h2>
+                <div class="header-actions">
+                    <span class="user-badge">👨‍⚕️ Demo Staff</span>
+                    <button class="btn btn--secondary btn--sm" onclick="switchRole()">Switch to Patient View</button>
+                    <button class="btn btn--outline btn--sm" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <h3>Quick Actions</h3>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="quickQuery('Find patient John Smith')">
+                        <span>👤</span> Patient Lookup
+                    </button>
+                    <button class="action-btn" onclick="quickQuery('How many patients visited last week?')">
+                        <span>📊</span> Analytics
+                    </button>
+                    <button class="action-btn" onclick="quickQuery('Generate social media post about flu prevention')">
+                        <span>📱</span> Marketing
+                    </button>
+                    <button class="action-btn" onclick="quickQuery('What should I do for an allergic reaction?')">
+                        <span>🏥</span> Clinical Protocol
+                    </button>
+                </div>
+                <div class="help-section">
+                    <h4>Try asking:</h4>
+                    <ul class="help-list">
+                        <li>"Find patient P-001"</li>
+                        <li>"Show Sarah Johnson's record"</li>
+                        <li>"Generate marketing content"</li>
+                        <li>"Patient demographics"</li>
+                        <li>"Emergency protocol for coma"</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div id="staff-chat" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="staff-input" class="form-control chat-input" 
+                           placeholder="Type your query (e.g., 'Find patient John Smith', 'Analytics for last week')..."
+                           onkeypress="handleStaffKeyPress(event)">
+                    <button class="btn btn--primary" onclick="sendStaffMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Patient Dashboard -->
+    <div id="patient-page" class="page">
+        <div class="dashboard-header">
+            <div class="header-content">
+                <h2>Patient Portal</h2>
+                <div class="header-actions">
+                    <span class="user-badge">👤 Patient</span>
+                    <button class="btn btn--secondary btn--sm" onclick="switchRole()">Staff Login</button>
+                </div>
+            </div>
+        </div>
+        <div class="dashboard-container">
+            <div class="sidebar">
+                <h3>Services</h3>
+                <div class="quick-actions">
+                    <button class="action-btn" onclick="startSymptomCollection()">
+                        <span>🩺</span> Report Symptoms
+                    </button>
+                    <button class="action-btn" onclick="startBooking()">
+                        <span>📅</span> Book Appointment
+                    </button>
+                    <button class="action-btn" onclick="quickQuery('What are your opening hours?')">
+                        <span>ℹ️</span> Clinic Information
+                    </button>
+                    <button class="action-btn" onclick="generateReport()">
+                        <span>📄</span> Request Report
+                    </button>
+                </div>
+                <div class="help-section">
+                    <h4>Need help?</h4>
+                    <ul class="help-list">
+                        <li>Report your symptoms</li>
+                        <li>Book an appointment</li>
+                        <li>Ask about clinic hours</li>
+                        <li>Request consultation reports</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="chat-container">
+                <div id="patient-chat" class="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="patient-input" class="form-control chat-input" 
+                           placeholder="Ask a question or select a service from the sidebar..."
+                           onkeypress="handlePatientKeyPress(event)">
+                    <button class="btn btn--primary" onclick="sendPatientMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="app.js"></script>
-  </body>
+</body>
 </html>
