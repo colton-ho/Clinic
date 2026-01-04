@@ -1,6 +1,7 @@
 const { latestSubmission } = require('./symptomService');
 const { bookings } = require('./bookingService');
 const { escapeHtml } = require('./utils');
+const { getReportTemplates } = require('./excelKnowledgeService');
 
 function latestBooking() {
   if (!bookings.length) return null;
@@ -10,9 +11,17 @@ function latestBooking() {
 function generateReportHtml() {
   const symptomData = latestSubmission();
   const booking = latestBooking();
+  const template = (getReportTemplates() || [])[0];
 
   if (!symptomData && !booking) {
-    return '<div class="card error">No data available yet. Submit symptoms or book an appointment first.</div>';
+    const templateLines =
+      template && template.sections && template.sections.lines && template.sections.lines.length
+        ? `<div class="template-block"><h4>Sample Assessment</h4><p>${template.sections.lines.join('<br>')}</p></div>`
+        : '';
+    return `
+      <div class="card error">No data available yet. Submit symptoms or book an appointment first.</div>
+      ${templateLines}
+    `;
   }
 
   return `
@@ -47,6 +56,14 @@ function generateReportHtml() {
           <li><strong>Contact:</strong> ${escapeHtml(booking.phone)}</li>
           <li><strong>Notes:</strong> ${escapeHtml(booking.notes || 'None')}</li>
         </ul>
+      `
+          : ''
+      }
+      ${
+        template && template.sections && template.sections.lines && template.sections.lines.length
+          ? `
+        <h4>Reference Template (Excel)</h4>
+        <p>${template.sections.lines.map((l) => escapeHtml(l)).join('<br>')}</p>
       `
           : ''
       }

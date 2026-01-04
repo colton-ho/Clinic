@@ -40,6 +40,7 @@ Responses are HTML snippets ready to insert into the chat UI to keep the prototy
 - `server/services/` – business logic modules (lookup, analytics, marketing, protocols, symptoms, bookings, reports, optional LLM stub).
 - `server/routes/` – Express routers for staff, patient, bookings, and reports.
 - `server/index.js` – Express app wiring, static file serving, and route mounting.
+- `server/services/excelKnowledgeService.js` – Loads structured content from `server/data/MT_Project_Chatbot.xlsx` (staff/patient FAQs, booking script, marketing drafts, pre-med fields, report template).
 
 ## Safety Notes
 - Do not use in production or for real medical advice.

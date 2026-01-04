@@ -4,8 +4,42 @@ const { summaryHtml: analyticsHtml } = require('../services/analyticsService');
 const { generateContent: marketingHtml } = require('../services/marketingService');
 const { findProtocol, protocolHtml } = require('../services/clinicalProtocolsService');
 const { generateLLMReply } = require('../services/llmService');
+const { searchFaqs, getStaffFaqs, getBookingScript } = require('../services/excelKnowledgeService');
 
 const router = express.Router();
+
+function faqHtml(hit) {
+  if (!hit) return '<div class="card error">No matching FAQ found.</div>';
+  return `
+    <div class="card">
+      <h4>${hit.category}</h4>
+      <p><strong>Q:</strong> ${hit.item.question}</p>
+      <p><strong>A:</strong> ${hit.item.answer}</p>
+      <div class="card-footer">From internal enquiries (Excel knowledge base).</div>
+    </div>
+  `;
+}
+
+function bookingScriptHtml(script = []) {
+  if (!script.length) return '<div class="card error">No booking script found.</div>';
+  const steps = script
+    .map(
+      (s) => `
+      <li>
+        <strong>${s.stepNumber} – ${s.category}</strong><br>
+        ${s.prompt || 'Prompt N/A'}<br>
+        ${s.options && s.options.length ? `<em>Options:</em> ${s.options.join(' | ')}` : ''}
+      </li>`
+    )
+    .join('');
+  return `
+    <div class="card">
+      <h4>Booking Script (Excel)</h4>
+      <ol>${steps}</ol>
+      <div class="card-footer">Sourced from booking sheet.</div>
+    </div>
+  `;
+}
 
 router.post('/chat', async (req, res) => {
   try {
@@ -34,6 +68,15 @@ router.post('/chat', async (req, res) => {
     if (query.includes('protocol') || query.includes('coma') || query.includes('stroke') || query.includes('allergic')) {
       const protocol = findProtocol(message);
       return res.json({ replyHtml: protocolHtml(protocol) });
+    }
+
+    if (query.includes('booking script') || query.includes('booking flow')) {
+      return res.json({ replyHtml: bookingScriptHtml(getBookingScript()) });
+    }
+
+    const faqHit = searchFaqs(getStaffFaqs(), message);
+    if (faqHit) {
+      return res.json({ replyHtml: faqHtml(faqHit) });
     }
 
     const llmReply = await generateLLMReply('staff', message);

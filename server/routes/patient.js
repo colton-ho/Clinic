@@ -3,6 +3,7 @@ const { doctors, timeSlots } = require('../data/doctors');
 const { addSymptomSubmission, summaryHtml: symptomSummaryHtml } = require('../services/symptomService');
 const { generateReportHtml } = require('../services/reportService');
 const { generateLLMReply } = require('../services/llmService');
+const { searchFaqs, getPatientFaqs, getPreMedFields } = require('../services/excelKnowledgeService');
 
 const router = express.Router();
 
@@ -65,6 +66,18 @@ function bookingFormHtml() {
   `;
 }
 
+function faqHtml(hit) {
+  if (!hit) return '<div class="card error">No matching answer found.</div>';
+  return `
+    <div class="card">
+      <h4>${hit.category}</h4>
+      <p><strong>Q:</strong> ${hit.item.question}</p>
+      <p><strong>A:</strong> ${hit.item.answer}</p>
+      <div class="card-footer">From patient enquiry handling (Excel knowledge base).</div>
+    </div>
+  `;
+}
+
 router.post('/chat', async (req, res) => {
   try {
     const { message } = req.body || {};
@@ -87,6 +100,11 @@ router.post('/chat', async (req, res) => {
       return res.json({ replyHtml: generateReportHtml() });
     }
 
+    const faqHit = searchFaqs(getPatientFaqs(), message);
+    if (faqHit) {
+      return res.json({ replyHtml: faqHtml(faqHit) });
+    }
+
     const llmReply = await generateLLMReply('patient', message);
     return res.json({
       replyHtml: `<div class="card"><p>${llmReply}</p><div class="card-footer">Demo only — not medical advice.</div></div>`
@@ -101,6 +119,10 @@ router.post('/symptoms', (req, res) => {
   const { submission, error } = addSymptomSubmission(req.body || {});
   if (error) return res.status(400).json({ error });
   return res.json({ replyHtml: symptomSummaryHtml(submission), submission });
+});
+
+router.get('/pre-med-config', (_req, res) => {
+  return res.json({ fields: getPreMedFields() });
 });
 
 module.exports = router;
